@@ -117,10 +117,124 @@ sum(range(4))  # 0 + 1 + 2 + 3
 
 ##### 4.4. break and continue Statements, and else Clauses on Loops #####
 
+# The break statement breaks out of the innermost enclosing for or while loop.
+
+# A for or while loop can include an else clause.
+
+# In a for loop, the else clause is executed after the loop reaches its 
+# final iteration.
+
+# In a while loop, it’s executed after the loop’s condition becomes false.
+
+# In either kind of loop, the else clause is not executed if the loop 
+# was terminated by a break.
+
+# This is exemplified in the following for loop, which searches for 
+# prime numbers:
+
+for n in range(2, 10):
+    for x in range(2, n):
+        if n % x == 0:
+            print(n, 'equals', x, '*', n//x)
+            break
+    else:
+        # loop fell through without finding a factor
+        print(n, 'is a prime number')
+
+# (Yes, this is the correct code. Look closely: the else clause belongs to the 
+# for loop, not the if statement.)
+
+# When used with a loop, the else clause has more in common with the else clause 
+# of a try statement than it does with that of if statements: a try statement’s 
+# else clause runs when no exception occurs, and a loop’s else clause runs when 
+# no break occurs. For more on the try statement and exceptions, see 
+# Handling Exceptions.
+
+# The continue statement, also borrowed from C, continues with the next iteration 
+# of the loop:
+
+for num in range(2, 10):
+    if num % 2 == 0:
+        print("Found an even number", num)
+        continue
+    print("Found an odd number", num)
 
 
+##### 4.5 pass Statements #####
+
+# The pass statement does nothing. It can be used when a statement is required 
+# syntactically but the program requires no action. For example:
+
+while True:
+    pass  # Busy-wait for keyboard interrupt (Ctrl+C)
+
+# This is commonly used for creating minimal classes:
+
+class MyEmptyClass:
+    pass
+
+# Another place pass can be used is as a place-holder for a function or 
+# conditional body when you are working on new code, allowing you to keep 
+# thinking at a more abstract level. The pass is silently ignored:
+
+def initlog(*args):
+    pass   # Remember to implement this!
 
 
+##### 4.6. match Statements #####
 
+# A match statement takes an expression and compares its value to successive 
+# patterns given as one or more case blocks. This is superficially similar to 
+# a switch statement in C, Java or JavaScript (and many other languages), but 
+# it’s more similar to pattern matching in languages like Rust or Haskell. 
+# Only the first pattern that matches gets executed and it can also extract 
+# components (sequence elements or object attributes) from the value into 
+# variables.
+
+# The simplest form compares a subject value against one or more literals:
+
+def http_error(status):
+    match status:
+        case 400:
+            return "Bad request"
+        case 404:
+            return "Not found"
+        case 418:
+            return "I'm a teapot"
+        case _:
+            return "Something's wrong with the internet"
+
+# Note the last block: the “variable name” _ acts as a wildcard and never fails 
+# to match. If no case matches, none of the branches is executed.
+
+# You can combine several literals in a single pattern using | (“or”):
+
+def http_error(status):
+    match status:
+        case 401 | 403 | 404:
+            return "Not allowed"
+
+# Patterns can look like unpacking assignments, and can be used to bind variables:
+
+# point is an (x, y) tuple
+# for example:
+point=(4, 8)
+match point:
+    case (0, 0):
+        print("Origin")
+    case (0, y):
+        print(f"Y={y}")
+    case (x, 0):
+        print(f"X={x}")
+    case (x, y):
+        print(f"X={x}, Y={y}")  # in this case we assign 4 to x and 8 to y
+    case _:
+        raise ValueError("Not a point")
+
+# Study that one carefully! The first pattern has two literals, and can be thought 
+# of as an extension of the literal pattern shown above. But the next two patterns 
+# combine a literal and a variable, and the variable binds a value from the 
+# subject (point). The fourth pattern captures two values, which makes it 
+# conceptually similar to the unpacking assignment (x, y) = point.
 
 
