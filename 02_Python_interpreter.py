@@ -2,7 +2,7 @@
 ##### Python 3.12.1 tutorial from the link: https://www.python.org/ --> Docs #####
 ##### 01/11/2024 #####
 
-##### tested on __________  Microsoft Windows - Python 3.12.0 (Oct  2 2023) #####
+##### tested on 01/11/2024 -  Microsoft Windows - Python 3.12.0 (Oct  2 2023) #####
 
 
 # This tutorial introduces the reader informally to the basic concepts and features of 
