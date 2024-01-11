@@ -272,15 +272,123 @@ len(s)
 
 ##### 3.1.3. Lists #####
 
+# Python knows a number of compound data types, used to group together other values. 
+# The most versatile is the list, which can be written as a list of comma-separated 
+# values (items) between square brackets. Lists might contain items of different 
+# types, but usually the items all have the same type.
+
+squares = [1, 4, 9, 16, 25]
+squares
+
+# Like strings (and all other built-in sequence types), lists can be 
+# indexed and sliced:
+
+squares[0]  # indexing returns the item
+
+squares[-1]
+
+squares[-3:]  # slicing returns a new list
+
+# All slice operations return a new list containing the requested elements. 
+# This means that the following slice returns a shallow copy of the list:
+
+squares[:]
+
+# Lists also support operations like concatenation:
+
+squares + [36, 49, 64, 81, 100]
+
+# Unlike strings, which are immutable, lists are a mutable type, i.e. it is 
+# possible to change their content:
+
+cubes = [1, 8, 27, 65, 125]  # something's wrong here
+4 ** 3  # the cube of 4 is 64, not 65!
+
+cubes[3] = 64  # replace the wrong value
+cubes
+
+# You can also add new items at the end of the list, by using the 
+# list.append() 
+# method (we will see more about methods later):
+
+cubes.append(216)  # add the cube of 6
+cubes.append(7 ** 3)  # and the cube of 7
+cubes
+
+# Assignment to slices is also possible, and this can even change the size of 
+# the list or clear it entirely:
+
+letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+letters
+
+# replace some values
+letters[2:5] = ['C', 'D', 'E']
+letters
+
+# now remove them
+letters[2:5] = []
+letters
+
+# clear the list by replacing all the elements with an empty list
+letters[:] = []
+letters
+
+# The built-in function len() also applies to lists:
+
+letters = ['a', 'b', 'c', 'd']
+len(letters)
+
+# It is possible to nest lists (create lists containing other lists), for example:
+
+a = ['a', 'b', 'c']
+n = [1, 2, 3]
+x = [a, n]  # we create a new list which contains two list, one in index 0  
+            # and one in index 1, so the lenght will be 2
+x
+
+x[0]  # we get the first list
+
+x[0][1]  # we get the second value, index 1, of the first list
 
 
+##### 3.2. First Steps Towards Programming #####
 
+# Of course, we can use Python for more complicated tasks than adding two and two 
+# together. For instance, we can write an initial sub-sequence of the 
+# Fibonacci series as follows:
 
+# Fibonacci series:
+# the sum of two elements defines the next
+a, b = 0, 1 # multiple assignment: the variables a and b simultaneously get 
+            # the new values 0 and 1.
+while a < 10:  # executes as long as the condition (here: a < 10) remains true
+    print(a)  # writes the value of the argument(s) it is given.
+    a, b = b, a+b 
 
+# The keyword argument end can be used to avoid the newline after the output, 
+# or end the output with a different string:
 
+a, b = 0, 1
+while a < 1000:
+    print(a, end=',') # argument end to avoid the newline after the output
+    a, b = b, a+b
 
+# In Python, like in C, any non-zero integer value is true; zero is false. 
+# The condition may also be a string or list value, in fact any sequence; 
+# anything with a non-zero length is true, empty sequences are false. The test 
+# used in the example is a simple comparison. The standard comparison operators 
+# are written the same as in C: < (less than), > (greater than), == (equal to), 
+# <= (less than or equal to), >= (greater than or equal to) and != (not equal to).
 
+# The body of the loop is indented: indentation is Python’s way of grouping 
+# statements. At the interactive prompt, you have to type a tab or space(s) for 
+# each indented line.
+# Note that each line within a basic block must be indented by the same amount.
 
+# Strings are printed without quotes, and a space is inserted between items, 
+# so you can format things nicely, like this:
 
+i = 256*256
+print('The value of i is', i)
 
 
