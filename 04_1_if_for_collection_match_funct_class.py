@@ -350,16 +350,153 @@ def where_is(point):
 where_is(temp)
 where_is(temp2)
 
+
+##### let's study about the special attribute __match_args__ #####
+##### https://earthly.dev/blog/structural-pattern-matching-python/ #####
+
+# Python classes do not have a natural ordering of their attributes, we 
+# need to specify the order of the attributes using the 
+# __match_args__ attribute before we can use the positional 
+# arguments in the patterns.
+
+class Post:
+    __match_args__ = ("post_id", "userId", "title", "body")
+    def __init__(self, userId, id, title, body):
+        self.userId = userId
+        self.title = title
+        self.body = body
+        self.post_id = id
+
+# The __match_args__ allows us to order the attributes based on our preference.
+
+    # - In the case above, the first argument in the pattern will match against 
+    #   the equivalent first value in the __match__args.
+
+    # - The post_id will be the first positional argument, the userId will be the 
+    #   second while the title and body will be the third and fourth positional 
+    #   arguments respectively.
+
+# If positional patterns are present in a class, they are converted to keyword 
+# patterns based on the arrangement in the __match_args__ attribute.
+
+
+##### Matching the structure of objects ######
+##### https://mathspp.com/blog/pydonts/structural-pattern-matching-tutorial #####
+
+# Structural pattern matching can also be used to match the structure of class 
+# instances. Let us recover the Point2D class I have used as an example in a 
+# couple of posts, in particular the Pydon't about __str__ and __repr__:
+
+class Point2D:
+    """A class to represent points in a 2D space."""
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __str__(self):
+        """Provide a good-looking representation of the object."""
+        return f"({self.x}, {self.y})"
+
+    def __repr__(self):
+        """Provide an unambiguous way of rebuilding this object."""
+        return f"Point2D({repr(self.x)}, {repr(self.y)})"
+
+# Imagine we now want to write a little function that takes a Point2D and writes a 
+# little description of where the point lies. We can use pattern matching to 
+# capture the values of the x and y attributes and, what is more, we can use short 
+# if statements to help narrow down the type of matches we want to succeed!
+
+# Take a look at the following:
+
+def describe_point(point):
+    """Write a human-readable description of the point position."""
+
+    match point:
+        case Point2D(x=0, y=0):
+            desc = "at the origin"
+        case Point2D(x=0, y=y):
+            desc = f"in the vertical axis, at y = {y}"
+        case Point2D(x=x, y=0):
+            desc = f"in the horizontal axis, at x = {x}"
+        case Point2D(x=x, y=y) if x == y:
+            desc = f"along the x = y line, with x = y = {x}"
+        case Point2D(x=x, y=y) if x == -y:
+            desc = f"along the x = -y line, with x = {x} and y = {y}"
+        case Point2D(x=x, y=y):
+            desc = f"at {point}"
+
+    return "The point is " + desc
+
+# Prints "The point is at the origin"
+print(describe_point(Point2D(0, 0)))
+
+# Prints "The point is in the horizontal axis, at x = 3"
+print(describe_point(Point2D(3, 0)))
+
+# Prints "# The point is along the x = -y line, with x = 3 and y = -3"
+print(describe_point(Point2D(3, -3)))
+
+# Prints "# The point is at (1, 2)"
+print(describe_point(Point2D(1, 2)))
+
+
+##### __match_args__ #####
+
+# Now, I don't know if you noticed, but didn't all the x= and y= in the code snippet 
+# above annoy you? Every time I wrote a new pattern for a Point2D instance, I had to 
+# specify what argument was x and what was y. For classes where this order is not 
+# arbitrary, we can use __match_args__ to tell Python how we would like match 
+# to match the attributes of our object.
+
+# Here is a shorter version of the example above, making use of __match_args__ 
+# to let Python know the order in which arguments to Point2D should match:
+
+class Point2D:
+    """A class to represent points in a 2D space."""
+
+    __match_args__ = ("x", "y")
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+def describe_point(point):
+    """Write a human-readable description of the point position."""
+
+    match point:
+        case Point2D(0, 0):
+            desc = "at the origin"
+        case Point2D(0, y):
+            desc = f"in the vertical axis, at y = {y}"
+        case Point2D(x, 0):
+            desc = f"in the horizontal axis, at x = {x}"
+        case Point2D(x, y):
+            desc = f"at {point}"
+
+    return "The point is " + desc
+
+# Prints "The point is at the origin"
+print(describe_point(Point2D(0, 0)))
+
+# Prints "The point is in the horizontal axis, at x = 3"
+print(describe_point(Point2D(3, 0)))
+
+# Prints "# The point is at (1, 2)"
+print(describe_point(Point2D(1, 2)))
+
+
+##### 4.6. match Statements - continue #####
+
 # You can use positional parameters with some builtin classes that provide an 
 # ordering for their attributes (e.g. dataclasses). You can also define a specific 
 # position for attributes in patterns by setting the __match_args__ special attribute 
 # in your classes. If it’s set to (“x”, “y”), the following patterns are all 
 # equivalent (and all bind the y attribute to the var variable):
 
-Point(1, var) ##### not clear #####
-Point(1, y=var) ##### not clear #####
-Point(x=1, y=var) ##### not clear #####
-Point(y=var, x=1) ##### not clear #####
+Point(1, var) 
+Point(1, y=var) 
+Point(x=1, y=var) 
+Point(y=var, x=1) 
 
 # A recommended way to read patterns is to look at them as an extended form of what 
 # you would put on the left of an assignment, to understand which variables would 
@@ -372,14 +509,13 @@ Point(y=var, x=1) ##### not clear #####
 # with __match_args__ added, we could match it like this:
 
 class Point:
-    __match_args__ = ('x', 'y')
+    __match_args__ = ("x", "y")
     def __init__(self, x, y):
         self.x = x
         self.y = y
-
-points = Point(2, 5)
-
-match points:
+        
+def where_is(points):
+  match points:
     case []:
         print("No points")
     case [Point(0, 0)]:
