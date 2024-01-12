@@ -400,17 +400,56 @@ match points:
 point = Point(3, 3)
 
 match point:
-    case Point(x, y) if x == y:
+    case Point(x, y) if x == y:    # for Point(3, 3) is True
         print(f"Y=X at {x}")
     case Point(x, y):
         print(f"Not on the diagonal")
 
+# Several other key features of this statement:
 
+    # - Like unpacking assignments, tuple and list patterns have exactly the same 
+    #   meaning and actually match arbitrary sequences. An important exception is  
+    #   that they don’t match iterators or strings.
 
+    # - Sequence patterns support extended unpacking: [x, y, *rest] and (x, y, *rest) 
+    #   work similar to unpacking assignments. The name after * may also be _, 
+    #   so (x, y, *_) matches a sequence of at least two items without binding the 
+    #   remaining items.
 
+    # - Mapping patterns: {"bandwidth": b, "latency": l} captures the "bandwidth" 
+    #   and "latency" values from a dictionary. Unlike sequence patterns, extra keys 
+    #   are ignored. An unpacking like **rest is also supported. (But **_ would be 
+    #   redundant, so it is not allowed.)
 
+    # - Subpatterns may be captured using the as keyword:
+        case (Point(x1, y1), Point(x2, y2) as p2): ...
+    #   will capture the second element of the input as p2 (as long as the input is a 
+    #   sequence of two points)
 
+    # - Most literals are compared by equality, however the singletons True, False 
+    #   and None are compared by identity.
 
+    # - Patterns may use named constants. These must be dotted names to prevent 
+    #   them from being interpreted as capture variable:
+
+        from enum import Enum
+        class Color(Enum):
+            RED = 'red'
+            GREEN = 'green'
+            BLUE = 'blue'
+
+        color = Color(input("Enter your choice of 'red', 'blue' or 'green': "))
+
+        match color:
+            case Color.RED:
+                print("I see red!")
+            case Color.GREEN:
+                print("Grass is green")
+            case Color.BLUE:
+                print("I'm feeling the blues :(")
+
+    #   For a more detailed explanation and additional examples, you can look into 
+    #   PEP 636 which is written in a tutorial format.
 
 
 
