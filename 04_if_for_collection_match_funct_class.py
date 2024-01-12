@@ -193,8 +193,8 @@ def initlog(*args):
 
 # The simplest form compares a subject value against one or more literals:
 
-def http_error(status):
-    match status:
+def http_error(status): # defines a function, argument is status
+    match status:  #  defines some status value (cases) in order to say something
         case 400:
             return "Bad request"
         case 404:
@@ -203,6 +203,8 @@ def http_error(status):
             return "I'm a teapot"
         case _:
             return "Something's wrong with the internet"
+
+http_error(400)
 
 # Note the last block: the “variable name” _ acts as a wildcard and never fails 
 # to match. If no case matches, none of the branches is executed.
@@ -213,6 +215,8 @@ def http_error(status):
     match status:
         case 401 | 403 | 404:
             return "Not allowed"
+
+http_error(403)
 
 # Patterns can look like unpacking assignments, and can be used to bind variables:
 
@@ -237,6 +241,80 @@ match point:
 # subject (point). The fourth pattern captures two values, which makes it 
 # conceptually similar to the unpacking assignment (x, y) = point.
 
+##### 4.6. match Statements - to be continued #####
+
+
+##### let's study Class #####
+##### 9.3.2. Class Objects #####
+
+# Class objects support two kinds of operations: attribute references and 
+# instantiation.
+
+# Attribute references use the standard syntax used for all attribute references in 
+# Python: obj.name. Valid attribute names are all the names that were in the 
+# class’s namespace when the class object was created. So, if the class definition 
+# looked like this:
+
+class MyClass:
+    """A simple example class"""  # valid attribute MyClass.__doc__
+    i = 12345  # valid attribute MyClass.i
+    def f(self):   " valid attribute MyClass.f
+        return 'hello world'
+
+MyClass.i
+MyClass.f(1)
+MyClass.f
+
+# then MyClass.i and MyClass.f are valid attribute references, returning an integer 
+# and a function object, respectively. Class attributes can also be assigned to, 
+# so you can change the value of MyClass.i by assignment. 
+# __doc__ is also a valid attribute, returning the docstring belonging 
+# to the class: "A simple example class".
+
+MyClass.i = 345
+MyClass.i
+
+MyClass.__doc__  # return 'A simple example class'
+
+# Class instantiation uses function notation. Just pretend that the class object is 
+# a parameterless function that returns a new instance of the class. For example 
+# (assuming the above class):
+
+x = MyClass()
+
+# creates a new instance of the class and assigns this object to the local 
+# variable x.
+
+# The instantiation operation (“calling” a class object) creates an empty object. 
+# Many classes like to create objects with instances customized to a specific 
+# initial state. Therefore a class may define a special method named 
+# __init__(), 
+# like this:
+
+def __init__(self):
+    self.data = []
+
+# When a class defines an __init__() method, class instantiation automatically 
+# invokes __init__() for the newly created class instance. So in this example, a new, 
+# initialized instance can be obtained by:
+
+x = MyClass()
+
+# Of course, the __init__() method may have arguments for greater flexibility. 
+# In that case, arguments given to the class instantiation operator are 
+# passed on to __init__(). For example,
+
+class Complex:
+    def __init__(self, realpart, imagpart):
+        self.r = realpart
+        self.i = imagpart
+
+x = Complex(3.0, -4.5)  # these arguments 3.0 and -4.5 are passed on to __init__()
+x.r, x.i   # it is like self.r but we created instantiation
+
+
+##### 4.6. match Statements - continue #####
+
 # If you are using classes to structure your data you can use the class name followed 
 # by an argument list resembling a constructor, but with the ability to capture 
 # attributes into variables:
@@ -245,6 +323,16 @@ class Point:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+
+temp = Point(0, 0)
+temp.x
+temp.y
+
+temp2 = Point(4, 6)
+temp2.x
+temp2.y
+
+# in this way it is possible to create new objects with different point values
 
 def where_is(point):
     match point:
@@ -259,7 +347,8 @@ def where_is(point):
         case _:
             print("Not a point")
 
-##### the code above is not clear #####
+where_is(temp)
+where_is(temp2)
 
 # You can use positional parameters with some builtin classes that provide an 
 # ordering for their attributes (e.g. dataclasses). You can also define a specific 
@@ -288,6 +377,8 @@ class Point:
         self.x = x
         self.y = y
 
+points = Point(2, 5)
+
 match points:
     case []:
         print("No points")
@@ -306,13 +397,15 @@ match points:
 # match goes on to try the next case block. Note that value capture happens before 
 # the guard is evaluated:
 
+point = Point(3, 3)
+
 match point:
     case Point(x, y) if x == y:
         print(f"Y=X at {x}")
     case Point(x, y):
         print(f"Not on the diagonal")
 
-##### code above not clear #####
+
 
 
 
