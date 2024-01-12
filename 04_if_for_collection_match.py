@@ -237,4 +237,87 @@ match point:
 # subject (point). The fourth pattern captures two values, which makes it 
 # conceptually similar to the unpacking assignment (x, y) = point.
 
+# If you are using classes to structure your data you can use the class name followed 
+# by an argument list resembling a constructor, but with the ability to capture 
+# attributes into variables:
+
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+def where_is(point):
+    match point:
+        case Point(x=0, y=0):
+            print("Origin")
+        case Point(x=0, y=y):
+            print(f"Y={y}")
+        case Point(x=x, y=0):
+            print(f"X={x}")
+        case Point():
+            print("Somewhere else")
+        case _:
+            print("Not a point")
+
+##### the code above is not clear #####
+
+# You can use positional parameters with some builtin classes that provide an 
+# ordering for their attributes (e.g. dataclasses). You can also define a specific 
+# position for attributes in patterns by setting the __match_args__ special attribute 
+# in your classes. If it’s set to (“x”, “y”), the following patterns are all 
+# equivalent (and all bind the y attribute to the var variable):
+
+Point(1, var) ##### not clear #####
+Point(1, y=var) ##### not clear #####
+Point(x=1, y=var) ##### not clear #####
+Point(y=var, x=1) ##### not clear #####
+
+# A recommended way to read patterns is to look at them as an extended form of what 
+# you would put on the left of an assignment, to understand which variables would 
+# be set to what. Only the standalone names (like var above) are assigned to by a 
+# match statement. Dotted names (like foo.bar), attribute names (the x= and y= above) 
+# or class names (recognized by the “(…)” next to them like Point above) are never 
+# assigned to.
+
+# Patterns can be arbitrarily nested. For example, if we have a short list of Points, 
+# with __match_args__ added, we could match it like this:
+
+class Point:
+    __match_args__ = ('x', 'y')
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+match points:
+    case []:
+        print("No points")
+    case [Point(0, 0)]:
+        print("The origin")
+    case [Point(x, y)]:
+        print(f"Single point {x}, {y}")
+    case [Point(0, y1), Point(0, y2)]:
+        print(f"Two on the Y axis at {y1}, {y2}")
+    case _:
+        print("Something else")
+
+##### code above not clear #####
+
+# We can add an if clause to a pattern, known as a “guard”. If the guard is false, 
+# match goes on to try the next case block. Note that value capture happens before 
+# the guard is evaluated:
+
+match point:
+    case Point(x, y) if x == y:
+        print(f"Y=X at {x}")
+    case Point(x, y):
+        print(f"Not on the diagonal")
+
+##### code above not clear #####
+
+
+
+
+
+
+
 
