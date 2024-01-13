@@ -195,8 +195,8 @@ def initlog(*args):
 
 def http_error(status): # defines a function, argument is status
     match status:  #  defines some status value (cases) in order to say something
-        case 400:
-            return "Bad request"
+        case 400:  # first pattern
+            return "Bad request"  # returns the string to the output after the call
         case 404:
             return "Not found"
         case 418:
@@ -204,7 +204,7 @@ def http_error(status): # defines a function, argument is status
         case _:
             return "Something's wrong with the internet"
 
-http_error(400)
+http_error(400)  # call the function we created with def
 
 # Note the last block: the “variable name” _ acts as a wildcard and never fails 
 # to match. If no case matches, none of the branches is executed.
@@ -213,7 +213,7 @@ http_error(400)
 
 def http_error(status):
     match status:
-        case 401 | 403 | 404:
+        case 401 | 403 | 404:  # we have return just for these options
             return "Not allowed"
 
 http_error(403)
@@ -224,16 +224,17 @@ http_error(403)
 # for example:
 point=(4, 8)
 match point:
-    case (0, 0):
+    case (0, 0):  # 0 and 0 are not variables
         print("Origin")
-    case (0, y):
+    case (0, y):  # here we have a variable, y,  that comes from point
         print(f"Y={y}")
     case (x, 0):
         print(f"X={x}")
     case (x, y):
         print(f"X={x}, Y={y}")  # in this case we assign 4 to x and 8 to y
     case _:
-        raise ValueError("Not a point")
+        raise ValueError("Not a point") # it returns an error message with the string
+                                        # "not a point"
 
 # Study that one carefully! The first pattern has two literals, and can be thought 
 # of as an extension of the literal pattern shown above. But the next two patterns 
@@ -241,7 +242,7 @@ match point:
 # subject (point). The fourth pattern captures two values, which makes it 
 # conceptually similar to the unpacking assignment (x, y) = point.
 
-##### 4.6. match Statements - to be continued #####
+##### to be continued #####
 
 
 ##### let's study Class #####
@@ -258,7 +259,8 @@ match point:
 class MyClass:
     """A simple example class"""  # valid attribute MyClass.__doc__
     i = 12345  # valid attribute MyClass.i
-    def f(self):   " valid attribute MyClass.f
+    def f(self):   " valid attribute MyClass.f # in this way th function f
+                                        # is an attribute of MyClass
         return 'hello world'
 
 MyClass.i
@@ -305,12 +307,17 @@ x = MyClass()
 # passed on to __init__(). For example,
 
 class Complex:
-    def __init__(self, realpart, imagpart):
+    def __init__(self, realpart, imagpart): # arguments here have to be the same
+                                            # we have in the code below
         self.r = realpart
         self.i = imagpart
 
 x = Complex(3.0, -4.5)  # these arguments 3.0 and -4.5 are passed on to __init__()
-x.r, x.i   # it is like self.r but we created instantiation
+x.r  # it is like self.r but we created instantiation
+x.i
+x = Complex(imagpart=3.0, realpart=-4.5) # it works with assignment
+x.r
+x.i
 
 
 ##### 4.6. match Statements - continue #####
@@ -320,7 +327,7 @@ x.r, x.i   # it is like self.r but we created instantiation
 # attributes into variables:
 
 class Point:
-    def __init__(self, x, y):
+    def __init__(self, x, y):  # constructor
         self.x = x
         self.y = y
 
@@ -333,12 +340,13 @@ temp2.x
 temp2.y
 
 # in this way it is possible to create new objects with different point values
+# note that in match --> case we have to specify in Point who is x and y
 
 def where_is(point):
     match point:
-        case Point(x=0, y=0):
+        case Point(x=0, y=0): # 0 and 0 are not variables
             print("Origin")
-        case Point(x=0, y=y):
+        case Point(x=0, y=y): # here we have a variable, y, that comes from point
             print(f"Y={y}")
         case Point(x=x, y=0):
             print(f"X={x}")
@@ -347,8 +355,8 @@ def where_is(point):
         case _:
             print("Not a point")
 
-where_is(temp)
-where_is(temp2)
+where_is(temp)  # result: origin
+where_is(temp2) # result: somewhere else
 
 
 ##### let's study about the special attribute __match_args__ #####
@@ -360,9 +368,11 @@ where_is(temp2)
 # arguments in the patterns.
 
 class Post:
-    __match_args__ = ("post_id", "userId", "title", "body")
+    __match_args__ = ("post_id", "userId", "title", "body") # post_id will be the
+                                                  # the first positional argument
     def __init__(self, userId, id, title, body):
-        self.userId = userId
+        self.userId = userId  # match against the equivalent first value
+                              # in the __match__args.
         self.title = title
         self.body = body
         self.post_id = id
@@ -493,10 +503,15 @@ print(describe_point(Point2D(1, 2)))
 # in your classes. If it’s set to (“x”, “y”), the following patterns are all 
 # equivalent (and all bind the y attribute to the var variable):
 
-Point(1, var) 
-Point(1, y=var) 
-Point(x=1, y=var) 
-Point(y=var, x=1) 
+# we now for example tha (x, y) is the couple of values we expect
+# match ______:
+    # case Point(1, var): 
+    # case Point(1, y=var): 
+    # case Point(x=1, y=var): 
+    # case Point(y=var, x=1): 
+
+# if you set __match_args__ to (“x”, “y”), the  patterns aboce are all 
+# equivalent (and all bind the y attribute to the var variable):
 
 # A recommended way to read patterns is to look at them as an extended form of what 
 # you would put on the left of an assignment, to understand which variables would 
@@ -513,21 +528,24 @@ class Point:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        
-def where_is(points):
+
+# for example:
+points=Point(0, 0)
+
   match points:
     case []:
         print("No points")
-    case [Point(0, 0)]:
+    case Point(0, 0):  # we don't associate values to x or y
         print("The origin")
-    case [Point(x, y)]:
+    case Point(x, y):
         print(f"Single point {x}, {y}")
-    case [Point(0, y1), Point(0, y2)]:
-        print(f"Two on the Y axis at {y1}, {y2}")
+    # case [Point(0, y1), Point(0, y2)]:  # this condition doesn' exist
+       #  print(f"Two on the Y axis at {y1}, {y2}")
     case _:
         print("Something else")
 
-##### code above not clear #####
+# let's try with:
+points=()  # in order to satisfy the first case
 
 # We can add an if clause to a pattern, known as a “guard”. If the guard is false, 
 # match goes on to try the next case block. Note that value capture happens before 
