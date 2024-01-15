@@ -296,13 +296,12 @@ non_null
 [1, 2, 3]              < [1, 2, 4]  # True
 'ABC' < 'C' < 'Pascal' < 'Python'   # True 
 'DCB' < 'C' < 'Pascal' < 'Python'   # False, I think because DCB comes after C 
-                                    # in the alphabet ???
-(1, 2, 3, 4)           < (1, 2, 4)  # True
-(1, 2, 5, 4)           < (1, 2, 4)  # False, I think because are compared the first
-                                    # three numbers ???
-(1, 2)                 < (1, 2, -1) # True  - not clear why
+                                    # in the alphabet
+(1, 2, 3, 4)           < (1, 2, 4)  # True  because 3 < 4 index 2
+(1, 2)                 < (1, 2, -1) # True  because 1=1 ,2=2 but the first list 
+                                    # is less lenght than the second
 (1, 2, 3)             == (1.0, 2.0, 3.0)   # True
-(1, 2, ('aa', 'ab'))   < (1, 2, ('abc', 'a'), 4)  # True  - not clear why
+(1, 2, ('aa', 'ab'))   < (1, 2, ('abc', 'a'), 4)  # True
 
 # Note that comparing objects of different types with < or > is legal provided 
 # that the objects have appropriate comparison methods. For example, mixed numeric 
