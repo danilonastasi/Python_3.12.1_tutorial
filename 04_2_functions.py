@@ -381,8 +381,8 @@ f(1)
 # to pass a small function as an argument:
 
 pairs = [(1, 'one'), (2, 'two'), (3, 'three'), (4, 'four')]
-pairs.sort(key=lambda pair: pair[1])
-pairs
+pairs.sort(key=lambda pair: pair[1])  # sort four --> one --> three --> two
+pairs   # [(4, 'four'), (1, 'one'), (3, 'three'), (2, 'two')]
 
 
 ##### 4.8.7. Documentation Strings #####
